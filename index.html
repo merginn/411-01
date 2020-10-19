@@ -1,66 +1,95 @@
 <!DOCTYPE html>
 <head>
- <title>D3.js Tutorial</title>
+ <title>D3.js Map Design</title>
  <script src="https://d3js.org/d3.v6.min.js"></script>
 </head>
 <body>
+  <svg></svg>
  <div style=" text-align: center;">
+ <div class = "graph" id"svgcontainer"></div>
  <h1>D3.js Bar Chart</h1>
- <div id="d3-container"/>
+ <div id="svgcontainer">
  </div>
- const data = [
-    [11, 2],
-    [22, 4],
-    [33, 1],
-    [44, 5]
-];
 
-const width = 800;
-const hight = 400;
-const margin = {top: 50, bottom: 50 left: 50, right: 50 };
+ <script>
+   var margin = {top: 20, right: 20, bottom: 50, left:60},
+     width   = 600 - margin.left - margin.right,
+     height  = 400 - margin.top - margin.bottom,
+     x       = d3.scale.ordinal().rangeRoundBands([0,width], 0.5),
+     y       = d3.scale.linear().range([height,0]);
 
-const svg = d3.select('#d3-container')
- .append('svg')
- .attr('height', height - margin.top - margin.bottom)
- .attr('width', width - margin.left - margin.right)
- .attr('viewBox', [0, 0, width, height]);
+//// DRAW AXIS     
+   var xAxis = d3.svg.axis()
+     .scale(x)
+     .orient("bottom");
+   var yAxis = d3.svg.axis()
+     .scale(y)
+     .orient("left")
+     .ticks(5)
+     .innerTickSize(-width)
+     .outerTickSize(0)
+     .tickPadding(10);
 
- const x = d3.scaleBand()
-  .domain(d3.range(data.lenght))
-  .range([margin.left, width - margin.right])
-  .padding(0.1);
 
-const y = d3.scaleLinear()
-  .domain([0, 100])
-  .range([height - margin.bottom, margin.top]);
+    /////  Create SVG FILE
+var svg  = d3.select("#svgcontainer")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+   
+   /////   JSON DATA
+   d3.json("https://yshqzt042e.execute-api.us-east-2.amazonaws.com/DEV", function (data)
+     {
+         x.domain(data.map(function (d)
+         {
+             return d.name;
+         }));
 
-svg
-  .append('g')
-  .attr('fill', 'green')
-  .selectAll('rect')
-  .join('rect')
-    .attr('x', (d, i => x(i)))
-    .attr('y', (d) => y(i))
-    .attr('height', d => y(0) - y(i))
-    .attr('width' x.bandwidth())
+         y.domain([0, d3.max(data, function (d)
+         {
+             return d.temperature;
+         })]);
 
-function xAxis(g) {
-    g.attr('transform', 'translate(0, ${height - margin.bottom})')
-    g.call(d3.axisBottom(x).tickFormat(i => data[i].name))
-    .attr('font-size, '20px')
- 
-}
+      svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0, " + height + ")")
+          .call(xAxis)
+          .selectAll("text")
+          .style("text-anchor", "middle")
+          .attr("dx", "-0.5em")
+          .attr("dy", "-.55em")
+          .attr("y", 30)
+          .attr("transform", "rotate(0)" );
 
-function yAxis(g){
-  g.attr('transform', 'translate'(${margin.left}, 0)')
-    .call(d3.axisLeft(y).ticks(null, data.format))
-    .attr('font-size, '20px')
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 5)
+          .attr("dy", "0.8em")
+          .attr("text-anchor", "end")
+          .text("temperature");
 
-}
-
-svg.append('g').call(yAxis);
-svg.append('g').call(xAxis);
-svg.node();
-
- </body>
- </html
+      svg.selectAll("bar")
+          .data(data)
+          .enter()
+          .append("rect")
+          .style("fill", "orange")
+          .attr("x", function(d)
+          {
+               return x(d.name);
+          })
+          .attr("width", x.rangeBand())
+          .attr("y", function (d)
+          {
+              return y(d.temperature);
+          })
+          .attr("height", function(d)
+          {
+               return height - y(d.temperature);
+          });
+      
+})
