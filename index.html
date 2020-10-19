@@ -12,6 +12,7 @@
  </div>
 
  <script>
+//// VARIABLES FOR BAR CHART
    var margin = {top: 20, right: 20, bottom: 50, left:60},
      width   = 600 - margin.left - margin.right,
      height  = 400 - margin.top - margin.bottom,
@@ -31,7 +32,7 @@
      .tickPadding(10);
 
 
-    /////  Create SVG FILE
+    /////  CREATE SVG FILE
 var svg  = d3.select("#svgcontainer")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
@@ -39,7 +40,7 @@ var svg  = d3.select("#svgcontainer")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
    
-   /////   JSON DATA
+   ///// READ DATA FROM JSON FILE
    d3.json("https://yshqzt042e.execute-api.us-east-2.amazonaws.com/DEV", function (data)
      {
          x.domain(data.map(function (d)
