@@ -41,7 +41,7 @@ var svg  = d3.select("#svgcontainer")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
    
    ///// READ DATA FROM JSON FILE
-   d3.json("temperature.json", function (data)
+   d3.json("https://yshqzt042e.execute-api.us-east-2.amazonaws.com/DEV", function (data)
      {
          x.domain(data.map(function (d)
          {
