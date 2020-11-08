@@ -1,6 +1,14 @@
 [
-    {"name": "City1", "temperature": 11},
-    {"name": "City2", "temperature": 22},
-    {"name": "City3", "temperature": 33},
-    {"name": "City4", "temperature": 44}
+    {"name": "City1", 
+        "temperature": "11"
+    },
+    {"name": "City2", 
+        "temperature": "22"
+    },
+    {"name": "City3", 
+        "temperature": "33"
+    },
+    {"name": "City4", 
+        "temperature": "44"
+    }
 ]
